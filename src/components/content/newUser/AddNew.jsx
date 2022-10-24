@@ -1,6 +1,8 @@
-import React from "react";
+import React,{useContext} from "react";
 import './AddNew.scss'
 import { GrFormClose } from 'react-icons/gr'
+import { postItems,getItems } from "../../helper/helper";
+import { AppContexts } from '../../../contexts/appContext'
 
 
 const formitObj = {
@@ -12,11 +14,21 @@ const formitObj = {
 }
 
 const AddNewPerson = ({ set }) => {
+    const { setData } = useContext(AppContexts)
+    
     const [state, setState] = React.useState(formitObj)
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(state);
-        setState(formitObj)
+       async function addNewUser() {
+            const data = await postItems('https://qadir-bricks-company.herokuapp.com/api/v1',state)
+            setState(formitObj)
+            console.log(data);
+            if(!data.status===201) return;
+            const allData = await getItems('https://qadir-bricks-company.herokuapp.com/api/v1');
+            setData(allData)
+            set()
+        }
+        addNewUser()
     }
 
     const handleChange = (e) => {

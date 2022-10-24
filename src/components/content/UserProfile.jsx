@@ -1,120 +1,47 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
 import { FaUserAlt } from "react-icons/fa"
 import { GrFormClose } from 'react-icons/gr'
-
-
+import { AddedForm, WidthrawForm } from './Forms'
+import { AppContexts } from '../../contexts/appContext'
+import { patchItems, getItems } from '../helper/helper'
 
 const genLists = (arr) => {
     return arr.map((el, i) => {
         return (<li key={i} style={el.add === true && el.widthraw === false ? { background: '#7D6E83' } : { background: '#D2001A' }}>
             Mr, Abdul Qadir {el.add === true && el.widthraw === false && 'added'}
-            {el.add === false && el.widthraw === true && 'widthraws'}
-            &nbsp;the {el.amount} amount and {el.bricks} bricks on {el.date}</li>)
+            {el.add === false && el.widthraw === true && 'removes'}
+            &nbsp;the {el.amount} amount and {el.bricks} bricks on {new Date(el.date).toLocaleDateString("en-US")}</li>)
     })
 }
-const AddedForm = () => {
-    const [state, setState] = React.useState({
-        add: true,
-        amount: '',
-        bricks: ''
-    });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(state);
+function reverse(array) {
+    var output = [],
+        i;
+    for (i = 0; i < array.length; i++) {
+        output.unshift(array[i]);
     }
-    const handleChange = (e) => {
-        setState(prev => {
-            return ({ ...prev, [e.target.name]: e.target.value })
-        })
-    }
-    return (
-        <form className='fromUserSubmit' onSubmit={(e) => handleSubmit(e)}>
-            <h3>Add more quantites</h3>
-            <label htmlFor="amount">Enter Amount</label>
-            <input value={state.amount} onChange={(e) => handleChange(e)} type="number" id='amount' name='amount' required />
-            <label htmlFor="bricks">Enter Bricks Quantity</label>
-            <input value={state.bricks} onChange={(e) => handleChange(e)} type="number" id='bricks' name='bricks' required />
-            <input type="submit" />
-        </form>
-    )
+    return output;
+}
+
+async function endContract(id, setUser, setData) {
+    const item = await patchItems(`https://qadir-bricks-company.herokuapp.com/api/v1/${id}`, {
+        active: false
+    })
+    if (item.status !== 200) return
+    setUser(item.data.updatedUser)
+    const allData = await getItems('https://qadir-bricks-company.herokuapp.com/api/v1');
+    setData(allData)
 }
 
 
-const WidthrawForm = () => {
-    const [state, setState] = React.useState({
-        widthraw: true,
-        amount: '',
-        bricks: ''
-    });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(state);
-        setState({
-            widthraw: true,
-            amount: '',
-            bricks: ''
-        })
-    }
-    const handleChange = (e) => {
-        setState(prev => {
-            return ({ ...prev, [e.target.name]: e.target.value })
-        })
-    }
-    return (
-        <form className='fromUserSubmit' onSubmit={(e) => handleSubmit(e)}>
-            <h3>How much quantites will be deduction</h3>
-            <label htmlFor="amount">Enter Amount</label>
-            <input value={state.amount} onChange={(e) => handleChange(e)} type="number" id='amount' name='amount' required />
-            <label htmlFor="bricks">Enter Bricks Quantity</label>
-            <input value={state.bricks} onChange={(e) => handleChange(e)} type="number" id='bricks' name='bricks' required />
-            <input type="submit" />
-        </form>
-    )
-}
 
-const fake = [
-    {
-        amount: '500',
-        bricks: '400',
-        date: '12-5-7',
-        add: true,
-        widthraw: false,
-    },
-    {
-        amount: '500',
-        bricks: '400',
-        date: '12-5-7',
-        add: false,
-        widthraw: true,
-    },
-    {
-        amount: '500',
-        bricks: '400',
-        date: '12-5-7',
-        add: true,
-        widthraw: false,
-    },
-    {
-        amount: '500',
-        bricks: '400',
-        date: '12-5-7',
-        add: true,
-        widthraw: false,
-    },
-    {
-        amount: '500',
-        bricks: '400',
-        date: '12-5-7',
-        add: true,
-        widthraw: false,
-    },
-]
-const ShowProfile = ({ id, set, end }) => {
+
+const ShowProfile = ({ userData, set, end }) => {
     const [addForm, setAddForm] = React.useState(false)
     const [widthrawForm, setWidthrawForm] = React.useState(false)
-
+    const [user, setUser] = useState(userData)
+    const { setData } = useContext(AppContexts)
     const toogleAddform = () => {
         setWidthrawForm(false)
         setAddForm((prev) => !prev)
@@ -125,21 +52,21 @@ const ShowProfile = ({ id, set, end }) => {
         setWidthrawForm((prev) => !prev)
     }
     return (
+        user &&
         <div className="User-profile-container">
-
             <div className="profile">
                 <div className="profile__container">
                     <button className="close-btn" onClick={() => set()}><GrFormClose /></button>
                     <div className="profile__heading">
                         <span className="user-profile">
                             <i><FaUserAlt /></i>
-                            <p>Ali Hassan Chak 566 aodkdj</p>
-                            <p>address <b>Dhola arain, duniya pur</b></p>
-                            <p>Contact <b>03069383843</b></p>
+                            <p>{user.name}</p>
+                            <p>address <b>{user.address}</b></p>
+                            <p>Contact <b>{user.number}</b></p>
                         </span>
                         <span>
-                            <p><b>Amount available : {id}</b></p>
-                            <p><b>Bricks available : {id}</b></p>
+                            <p><b>Amount available : {user.amount}</b></p>
+                            <p><b>Bricks available : {user.bricks}</b></p>
                         </span>
 
                     </div>
@@ -149,18 +76,23 @@ const ShowProfile = ({ id, set, end }) => {
                             <button onClick={() => toogleWidthrawform()}>Widthraws</button>
                         </div>
                     }
-                    {addForm && <AddedForm />}
-                    {widthrawForm && <WidthrawForm />}
+                    {addForm && <AddedForm id={user.id} setUser={setUser} />}
+                    {widthrawForm && <WidthrawForm id={user.id} setUser={setUser} />}
                     <div className="profile__content">
                         <ul>
-                            {genLists(fake)}
+
+                            {genLists(reverse(user.userStatus))}
 
                         </ul>
                     </div>
                     <div className="end-contract-btn">
-                        {end ? <button>Already Ended</button> :
-                            <button>End Contract</button>}
-
+                        {user.active ?
+                            <button onClick={(e) => {
+                                e.preventDefault()
+                                endContract(user.id, setUser, setData)
+                            }}>End Contract</button>
+                            : <button style={{ background: 'black', color: 'white' }}>Already Ended</button>
+                        }
                     </div>
 
                 </div>
