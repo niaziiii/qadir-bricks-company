@@ -21,7 +21,7 @@ const Content = ({ section }) => {
       }
 
     }
-    return () => fetchData()
+    fetchData()
     // eslint-disable-next-line
   }, [])
 

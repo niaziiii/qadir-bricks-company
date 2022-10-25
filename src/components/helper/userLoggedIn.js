@@ -3,8 +3,6 @@ import { getItems } from './helper';
 
 const checkUserLogedIn = async ({ setAuthUser }) => {
     const cookies = cookie.loadAll()
-    console.log('in user logged in fun');
-    console.log(cookies);
     if (!cookies.jwt) return setAuthUser(false)
 
     try {

@@ -5,29 +5,21 @@ import LoadingAnimation from "./components/loadingAnimation/LoadingAnimation";
 
 function App() {
   const [authUser, setAuthUser] = React.useState(null)
-  const values = {
-    authUser,
-    setAuthUser
-  }
+
   useEffect(() => {
-    console.log('in use effect fun');
-    async function loggedIn() { 
-    console.log('is  logged in  fun');
-      const user = await checkUserLogedIn(values) 
-      console.log(user);
-    }
+    async function loggedIn() { await checkUserLogedIn({setAuthUser}) }
     loggedIn()
     // eslint-disable-next-line
   }, [])
 
-  console.log(authUser,'1');
+  console.log(authUser, '1');
   if (authUser === null) return (<LoadingAnimation />)
-  console.log(authUser,'2');
-  if (authUser === null) return (setTimeout(<LoadingAnimation />,10000))
+  console.log(authUser, '2');
+  if (authUser === null) return (setTimeout(<LoadingAnimation />, 10000))
 
   return (
     <div className="App"> <>{
-      authUser ? <HomePage /> : <Login {...values} />
+      authUser ? <HomePage /> : <Login setAuthUser={setAuthUser} />
     } </>  </div>
   );
 }
