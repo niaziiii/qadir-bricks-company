@@ -4,7 +4,7 @@ import { AppContexts } from '../../contexts/appContext'
 
 const AddedForm = ({ id, setUser }) => {
     const { setData } = useContext(AppContexts)
-
+    const [btn,setBtn] = React.useState('Add value')
     const [state, setState] = React.useState({
         add: true,
         widthraw: false,
@@ -14,6 +14,9 @@ const AddedForm = ({ id, setUser }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if(btn==='loading...') return
+        setBtn('loading...')
+
         async function fetchData() {
             const user = await patchItems(`https://qadir-bricks-company.herokuapp.com/api/v1/${id}`, state)
 
@@ -25,7 +28,7 @@ const AddedForm = ({ id, setUser }) => {
                     amount: '',
                     bricks: ''
                 });
-
+                setBtn('Add value')
                 const allData = await getItems('https://qadir-bricks-company.herokuapp.com/api/v1');
                 setData(allData)
 
@@ -46,7 +49,7 @@ const AddedForm = ({ id, setUser }) => {
             <input value={state.amount} onChange={(e) => handleChange(e)} type="number" id='amount' name='amount' required />
             <label htmlFor="bricks">Enter Bricks Quantity</label>
             <input value={state.bricks} onChange={(e) => handleChange(e)} type="number" id='bricks' name='bricks' required />
-            <input type="submit" />
+            <input type="submit" value={btn}/>
         </form>
     )
 }
@@ -54,7 +57,7 @@ const AddedForm = ({ id, setUser }) => {
 
 const WidthrawForm = ({ id, setUser }) => {
     const { setData } = useContext(AppContexts)
-
+    const [btn,setBtn] = React.useState('Widthraw')
     const [state, setState] = React.useState({
         widthraw: true,
         add: false,
@@ -64,6 +67,9 @@ const WidthrawForm = ({ id, setUser }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if(btn==='loading...') return
+        setBtn('loading...')
+
         async function fetchData() {
             const user = await patchItems(`https://qadir-bricks-company.herokuapp.com/api/v1/${id}`, state)
             setUser(user.data.updatedUser)
@@ -74,6 +80,7 @@ const WidthrawForm = ({ id, setUser }) => {
                     amount: '',
                     bricks: ''
                 });
+                setBtn('Widthraw')
                 const allData = await getItems('https://qadir-bricks-company.herokuapp.com/api/v1');
                 setData(allData)
             }
@@ -93,7 +100,7 @@ const WidthrawForm = ({ id, setUser }) => {
             <input value={state.amount} onChange={(e) => handleChange(e)} type="number" id='amount' name='amount' required />
             <label htmlFor="bricks">Enter Bricks Quantity</label>
             <input value={state.bricks} onChange={(e) => handleChange(e)} type="number" id='bricks' name='bricks' required />
-            <input type="submit" />
+            <input type="submit" value={btn}/>
         </form>
     )
 }

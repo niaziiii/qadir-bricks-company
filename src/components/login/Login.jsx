@@ -1,7 +1,10 @@
 import React from 'react'
+import { postItems } from '../helper/helper';
+import cookie from 'react-cookies'
+
 import './login.scss'
 
-const Login = ({setAuthUser}) => {
+const Login = ({ setAuthUser }) => {
     const [state, setState] = React.useState({
         email: '',
         password: ''
@@ -18,8 +21,14 @@ const Login = ({setAuthUser}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(state);
-        setAuthUser(true)
+        const LoginUser = async()=>{
+            const user = await postItems('https://qadir-bricks-company.herokuapp.com/api/v1/admin/login',state);
+            if(user.status !== 200) return;
+            cookie.save('jwt', user.data.token, { path: '/' })
+            setAuthUser(true)
+        }
+        // setAuthUser(true)
+        LoginUser()
     }
     return (
         <div className='login-user'>

@@ -11,10 +11,10 @@ const HomePage = () => {
     <div className='home'>
       <div className="home__container">
         <div className="home__left">
-          <Lists openSection={setCount} count={count}/>
+          <Lists openSection={setCount} count={count} />
         </div>
         <div className="home__right">
-          <Content section={count}/>
+          <Content section={count} />
         </div>
       </div>
     </div>

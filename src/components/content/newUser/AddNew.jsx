@@ -22,7 +22,6 @@ const AddNewPerson = ({ set }) => {
        async function addNewUser() {
             const data = await postItems('https://qadir-bricks-company.herokuapp.com/api/v1',state)
             setState(formitObj)
-            console.log(data);
             if(!data.status===201) return;
             const allData = await getItems('https://qadir-bricks-company.herokuapp.com/api/v1');
             setData(allData)

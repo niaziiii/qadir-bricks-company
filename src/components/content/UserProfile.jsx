@@ -70,11 +70,12 @@ const ShowProfile = ({ userData, set, end }) => {
                         </span>
 
                     </div>
-                    {end ? '' :
+                    {user.active ?
                         <div className="profile__btns">
                             <button onClick={() => toogleAddform()}>Added</button>
                             <button onClick={() => toogleWidthrawform()}>Widthraws</button>
                         </div>
+                        :'' 
                     }
                     {addForm && <AddedForm id={user.id} setUser={setUser} />}
                     {widthrawForm && <WidthrawForm id={user.id} setUser={setUser} />}
