@@ -11,7 +11,12 @@ function App() {
   }
   useEffect(() => {
     console.log('in use effect fun');
-    async function loggedIn() { await checkUserLogedIn(values) }
+    async function loggedIn() { 
+    console.log('is  logged in  fun');
+      const user = await checkUserLogedIn(values) 
+      console.log(user);
+
+    }
     return () => loggedIn()
     // eslint-disable-next-line
   }, [])
