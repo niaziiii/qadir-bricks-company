@@ -15,7 +15,7 @@ function App() {
     // eslint-disable-next-line
   }, [])
 
-  if (authUser === null) return (<LoadingAnimation />)
+  if (authUser === null) return (setTimeout(<LoadingAnimation />,10000))
 
   return (
     <div className="App"> <>{
