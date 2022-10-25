@@ -15,8 +15,7 @@ const getItems = async (str) => {
     if (!data.status === 200) return;
     return data.data;
   } catch (error) {
-    console.log(error);
-    throw new Error(error);
+    throw error
   }
 }
 
@@ -34,7 +33,7 @@ const postItems = async (str, dataObj) => {
     if (!data.status === 201) throw new Error(data);
     return data;
   } catch (error) {
-    throw new Error(error);
+    throw error
   }
 }
 const patchItems = async (str, dataObj) => {
@@ -51,7 +50,7 @@ const patchItems = async (str, dataObj) => {
     if (!data.status === 201) throw new Error(data);
     return data;
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 }
 

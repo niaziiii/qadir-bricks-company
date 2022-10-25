@@ -5,18 +5,34 @@
     min-height: 100vh;
     &__container{
         background-color: #F8EDE3;
-        padding: 2rem;
+        width: 40%;
+        padding: 2rem 0 2rem 0;
         border-radius: 10px;
         box-shadow: 0 0 5px 1px black;
+        position: relative;
+        overflow: hidden;
+
+        .errorMessage{
+            position: absolute;
+            text-align: center;
+            overflow: hidden;
+            top: 0%;
+            right: 0%;
+            width: 100%;
+            background-color: red;
+        }
         form{
+            width: 50%;
+            margin: auto;
             text-align: center;
             display: flex;
             flex-direction: column;
+            // background-color: red;
             label{
                 text-transform: capitalize;
                 text-align: start;
                 margin-top: 1.5rem;
-                font-size: .8rem;
+                font-size: .7rem;
                 margin-bottom: .3rem;
                 font-weight: 700;
             }
@@ -25,19 +41,46 @@
                 border-radius: 4px;
                 outline: none;
                 border: none;
-                padding: .4rem;
-                width: 15rem;
+                padding: .7rem .2rem;
+                width: 100%;
             }
             input[type='submit']{
-                width: 5rem;
+                width: 8rem;
                 background-color: black;
                 color: #F8EDE3;
                 margin: auto;
                 margin-top: 1rem;
                 cursor: pointer;
                 text-align: center;
+                padding: .4rem 0;
                 // display: inline;
             }
         }
+    }
+}
+
+@media screen and (max-width:1050px) {
+    .login-user{
+    &__container{
+        width: 60%;
+    }
+    }
+}
+
+@media screen and (max-width:700px) {
+    .login-user{
+    &__container{
+        width: 70%;
+        form{
+            width: 90%;
+        }
+    }
+    }
+}
+@media screen and (max-width:510px) {
+    .login-user{
+    &__container{
+        width: 90%;
+    }
     }
 }

@@ -14,7 +14,6 @@ const Content = ({ section }) => {
     async function fetchData() {
       try {
         await promise
-        // console.log(promise);
         setData(await promise)
       } catch (error) {
         console.log(error);
