@@ -15,9 +15,8 @@ function App() {
     console.log('is  logged in  fun');
       const user = await checkUserLogedIn(values) 
       console.log(user);
-
     }
-    return () => loggedIn()
+    loggedIn()
     // eslint-disable-next-line
   }, [])
 
