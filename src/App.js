@@ -10,6 +10,7 @@ function App() {
     setAuthUser
   }
   useEffect(() => {
+    console.log('in use effect fun');
     async function loggedIn() { await checkUserLogedIn(values) }
     return () => loggedIn()
     // eslint-disable-next-line
