@@ -18,6 +18,7 @@ function App() {
   console.log(authUser,'1');
   if (authUser === null) return (<LoadingAnimation />)
   console.log(authUser,'2');
+  if (authUser === null) return (setTimeout(<LoadingAnimation />,10000))
 
   return (
     <div className="App"> <>{
