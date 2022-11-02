@@ -1,10 +1,12 @@
 import React from 'react'
-import { postItems } from '../helper/helper';
-import cookie from 'react-cookies'
 
 import './login.scss'
+import { LoginUser } from '../../stateRedux/features/adminSlice';
+import { useDispatch } from 'react-redux';
 
-const Login = ({ setAuthUser }) => {
+const Login = () => {
+    const dispatch = useDispatch();
+
     const [btn, setBtn] = React.useState('Login')
     const [errorMessage, setErrorMessage] = React.useState('')
     const [state, setState] = React.useState({
@@ -23,23 +25,20 @@ const Login = ({ setAuthUser }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        setBtn('Wait loging')
-        const LoginUser = async () => {
+        setBtn('Processing..')
+        const LoginAsync = async () => {
             try {
-                const user = await postItems('https://qadir-bricks-company.herokuapp.com/api/v1/admin/login', state);
-                if (user.status !== 200) return;
-                cookie.save('jwt', user.data.token, { path: '/' })
-                setAuthUser(true)
+                dispatch(LoginUser(state))
             } catch (error) {
+                console.log(error);
                 setErrorMessage(error.response.data.message)
                 setTimeout(() => {
                     setErrorMessage('')
-                    setBtn('Login Again')
-                    setAuthUser(false)
+                    setBtn('Login Failed')
                 }, 1500);
             }
         }
-        LoginUser()
+        LoginAsync()
     }
     return (
         <div className='login-user'>

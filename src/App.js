@@ -1,23 +1,30 @@
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { HomePage, Login } from "./components";
-import { checkUserLogedIn } from "./components/helper/userLoggedIn";
 import LoadingAnimation from "./components/loadingAnimation/LoadingAnimation";
+import { LoggedInUserCheck } from "./stateRedux/features/adminSlice";
+import { calUsers } from "./stateRedux/features/usersSlice";
 
 function App() {
-  const [authUser, setAuthUser] = React.useState(null)
+  const dispatch = useDispatch()
+  const { users, admin } = useSelector(store => store);
+  const { isLoading, isLoggedIn } = admin;
 
   useEffect(() => {
-    async function loggedIn() { await checkUserLogedIn({ setAuthUser }) }
-    loggedIn()
+    (()=>{dispatch(LoggedInUserCheck())})()
     // eslint-disable-next-line
   }, [])
 
-  if (authUser === null) return (<LoadingAnimation />)
-  if (authUser === null) return (setTimeout(<LoadingAnimation />, 10000))
+  useEffect(() => {
+    dispatch(calUsers())
+    // eslint-disable-next-line
+  }, [users.users])
+
+  if (isLoading) return (<LoadingAnimation />)
 
   return (
     <div className="App"> <>{
-      authUser ? <HomePage /> : <Login setAuthUser={setAuthUser} />
+      isLoggedIn ? <HomePage /> : <Login />
     } </>  </div>
   );
 }

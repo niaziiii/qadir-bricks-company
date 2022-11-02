@@ -1,9 +1,9 @@
-import React,{useContext} from "react";
+import React from "react";
 import './AddNew.scss'
 import { GrFormClose } from 'react-icons/gr'
-import { postItems,getItems } from "../../helper/helper";
-import { AppContexts } from '../../../contexts/appContext'
-
+import { useDispatch } from "react-redux";
+import { closeModalNewUser } from "../../../stateRedux/features/userModalSlice";
+import { addNewUserBooked } from "../../../stateRedux/features/usersSlice";
 
 const formitObj = {
     address: "",
@@ -14,20 +14,12 @@ const formitObj = {
 }
 
 const AddNewPerson = ({ set }) => {
-    const { setData } = useContext(AppContexts)
-    
+    const dispatch = useDispatch();    
     const [state, setState] = React.useState(formitObj)
+
     const handleSubmit = (e) => {
         e.preventDefault()
-       async function addNewUser() {
-            const data = await postItems('https://qadir-bricks-company.herokuapp.com/api/v1',state)
-            setState(formitObj)
-            if(!data.status===201) return;
-            const allData = await getItems('https://qadir-bricks-company.herokuapp.com/api/v1');
-            setData(allData)
-            set()
-        }
-        addNewUser()
+        dispatch(addNewUserBooked(state))
     }
 
     const handleChange = (e) => {
@@ -42,7 +34,7 @@ const AddNewPerson = ({ set }) => {
     return (
         <div className="addnewperson">
             <div className="addnewperson__container">
-                <button className="close-btn-add" onClick={() => set()}><GrFormClose /></button>
+                <button className="close-btn-add" onClick={() => dispatch(closeModalNewUser())}><GrFormClose /></button>
                 <form onSubmit={(e) => handleSubmit(e)}>
 
                     <h3>Add New Person</h3>

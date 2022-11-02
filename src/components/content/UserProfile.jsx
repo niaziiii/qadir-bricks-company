@@ -1,16 +1,22 @@
-import React, { useState, useContext } from 'react'
+import React from 'react'
 import { FaUserAlt } from "react-icons/fa"
+import { AiOutlineArrowDown,AiOutlineArrowUp } from "react-icons/ai"
+
 import { GrFormClose } from 'react-icons/gr'
-import { AddedForm, WidthrawForm } from './Forms'
-import { AppContexts } from '../../contexts/appContext'
-import { patchItems, getItems } from '../helper/helper'
+import { AddRemoveForm } from './Forms'
+import { closeModalUser, removeModalUser, toogleWidthrawForm, toogleAddForm } from '../../stateRedux/features/userModalSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { endContracted } from '../../stateRedux/features/usersSlice'
+
 
 const genLists = (arr) => {
     return arr.map((el, i) => {
-        return (<li key={i} style={el.add === true && el.widthraw === false ? { background: '#7D6E83' } : { background: '#D2001A' }}>
-            Mr, Abdul Qadir {el.add === true && el.widthraw === false && 'added'}
-            {el.add === false && el.widthraw === true && 'removes'}
-            &nbsp;the {el.amount} amount and {el.bricks} bricks on {new Date(el.date).toLocaleDateString("en-US")}</li>)
+        return (<li key={i}>
+            <h4 className={`main-list-${el.add ? "remove" : "add"}`}><b >{el.widthraw ? "Removed" : "Added"}</b></h4>
+            <h4>{el.amount}</h4>
+            <h4>{el.bricks}</h4>
+            <h4>{new Date(el.date).toLocaleDateString("en-US")}</h4>
+        </li>)
     })
 }
 
@@ -23,75 +29,60 @@ function reverse(array) {
     return output;
 }
 
-async function endContract(id, setUser, setData) {
-    const item = await patchItems(`https://qadir-bricks-company.herokuapp.com/api/v1/${id}`, {
-        active: false
-    })
-    if (item.status !== 200) return
-    setUser(item.data.updatedUser)
-    const allData = await getItems('https://qadir-bricks-company.herokuapp.com/api/v1');
-    setData(allData)
-}
 
+const ShowProfile = () => {
+    const dispatch = useDispatch()
+    const { userProfile, isOpenAddForm, isOpenWidthrawForm } = useSelector(store => store.userModal)
 
-
-
-
-const ShowProfile = ({ userData, set, end }) => {
-    const [addForm, setAddForm] = React.useState(false)
-    const [widthrawForm, setWidthrawForm] = React.useState(false)
-    const [user, setUser] = useState(userData)
-    const { setData } = useContext(AppContexts)
-    const toogleAddform = () => {
-        setWidthrawForm(false)
-        setAddForm((prev) => !prev)
-    }
-
-    const toogleWidthrawform = () => {
-        setAddForm(false)
-        setWidthrawForm((prev) => !prev)
-    }
     return (
-        user &&
+        userProfile &&
         <div className="User-profile-container">
             <div className="profile">
                 <div className="profile__container">
-                    <button className="close-btn" onClick={() => set()}><GrFormClose /></button>
+                    <button className="close-btn" onClick={() => {
+                        dispatch(closeModalUser())
+                        dispatch(removeModalUser())
+                    }}><GrFormClose /></button>
                     <div className="profile__heading">
                         <span className="user-profile">
                             <i><FaUserAlt /></i>
-                            <p>{user.name}</p>
-                            <p>address <b>{user.address}</b></p>
-                            <p>Contact <b>{user.number}</b></p>
+                            <p>{userProfile.name}</p>
+                            <p>address <b>{userProfile.address}</b></p>
+                            <p>Contact <b>{userProfile.number}</b></p>
                         </span>
                         <span>
-                            <p><b>Amount available : {user.amount}</b></p>
-                            <p><b>Bricks available : {user.bricks}</b></p>
+                            <h2>
+                            <p><b>Amount available : {userProfile.amount}</b></p>
+                            <p><b>Bricks available : {userProfile.bricks}</b></p>
+                            </h2>
                         </span>
 
                     </div>
-                    {user.active ?
+                    {userProfile.active ?
                         <div className="profile__btns">
-                            <button onClick={() => toogleAddform()}>Added</button>
-                            <button onClick={() => toogleWidthrawform()}>Widthraws</button>
+                            <button onClick={() => dispatch(toogleAddForm())}>Added {isOpenAddForm? <AiOutlineArrowUp/>: <AiOutlineArrowDown/>}</button>
+                            <button onClick={() => dispatch(toogleWidthrawForm())}>Widthraws {isOpenWidthrawForm? <AiOutlineArrowUp/>: <AiOutlineArrowDown/>}</button>
                         </div>
-                        :'' 
+                        : ''
                     }
-                    {addForm && <AddedForm id={user.id} setUser={setUser} />}
-                    {widthrawForm && <WidthrawForm id={user.id} setUser={setUser} />}
+                    {isOpenAddForm && <AddRemoveForm id={userProfile.id} refId={'Add'} />}
+                    {isOpenWidthrawForm && <AddRemoveForm id={userProfile.id} />}
                     <div className="profile__content">
                         <ul>
 
-                            {genLists(reverse(user.userStatus))}
+                            <li className='main-list'>
+                                <h4>Type</h4>
+                                <h4>Amount</h4>
+                                <h4>Bricks</h4>
+                                <h4>Date</h4>
+                            </li>
+                            {genLists(reverse(userProfile.userStatus))}
 
                         </ul>
                     </div>
                     <div className="end-contract-btn">
-                        {user.active ?
-                            <button onClick={(e) => {
-                                e.preventDefault()
-                                endContract(user.id, setUser, setData)
-                            }}>End Contract</button>
+                        {userProfile.active ?
+                            <button onClick={() => dispatch(endContracted(userProfile.id))}>End Contract</button>
                             : <button style={{ background: 'black', color: 'white' }}>Already Ended</button>
                         }
                     </div>

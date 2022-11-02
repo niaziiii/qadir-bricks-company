@@ -1,41 +1,31 @@
-import React, { useContext } from "react";
-import { getItems, patchItems } from '../helper/helper'
-import { AppContexts } from '../../contexts/appContext'
+import React from "react";
+import { useDispatch } from "react-redux";
+import { updateUserStats } from "../../stateRedux/features/usersSlice";
 
-const AddedForm = ({ id, setUser }) => {
-    const { setData } = useContext(AppContexts)
-    const [btn,setBtn] = React.useState('Add value')
-    const [state, setState] = React.useState({
-        add: true,
-        widthraw: false,
-        amount: '',
-        bricks: ''
-    });
+const addState = {
+    add: true,
+    widthraw: false,
+    amount: '',
+    bricks: ''
+}
+const widthrawState = {
+    widthraw: true,
+    add: false,
+    amount: '',
+    bricks: ''
+}
+const AddRemoveForm = ({ id, refId }) => {
+    const dispatch = useDispatch()
+    const [btn, setBtn] = React.useState('Submit Request')
+    const [state, setState] = React.useState(refId === 'Add' ? addState : widthrawState);
 
     const handleSubmit = (e) => {
+        setBtn('Submiting...')
         e.preventDefault();
-        if(btn==='loading...') return
-        setBtn('loading...')
-
-        async function fetchData() {
-            const user = await patchItems(`https://qadir-bricks-company.herokuapp.com/api/v1/${id}`, state)
-
-            setUser(user.data.updatedUser)
-            if (user.status === 200) {
-                setState({
-                    add: true,
-                    widthraw: false,
-                    amount: '',
-                    bricks: ''
-                });
-                setBtn('Add value')
-                const allData = await getItems('https://qadir-bricks-company.herokuapp.com/api/v1');
-                setData(allData)
-
-            }
-        }
-        fetchData()
-
+        if (btn === 'Submiting...') return
+        dispatch(updateUserStats({ data: state, id: id }))
+        setBtn('Submited')
+        setState(addState)
     }
     const handleChange = (e) => {
         setState(prev => {
@@ -44,68 +34,19 @@ const AddedForm = ({ id, setUser }) => {
     }
     return (
         <form className='fromUserSubmit' onSubmit={(e) => handleSubmit(e)}>
-            <h3>Add more quantites</h3>
+            {refId === 'Add' ? <h3>Add more...</h3> : <h3>Remove more...</h3>}
             <label htmlFor="amount">Enter Amount</label>
             <input value={state.amount} onChange={(e) => handleChange(e)} type="number" id='amount' name='amount' required />
             <label htmlFor="bricks">Enter Bricks Quantity</label>
             <input value={state.bricks} onChange={(e) => handleChange(e)} type="number" id='bricks' name='bricks' required />
-            <input type="submit" value={btn}/>
+            <input type="submit" value={btn} />
         </form>
     )
 }
 
 
-const WidthrawForm = ({ id, setUser }) => {
-    const { setData } = useContext(AppContexts)
-    const [btn,setBtn] = React.useState('Widthraw')
-    const [state, setState] = React.useState({
-        widthraw: true,
-        add: false,
-        amount: '',
-        bricks: ''
-    });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if(btn==='loading...') return
-        setBtn('loading...')
-
-        async function fetchData() {
-            const user = await patchItems(`https://qadir-bricks-company.herokuapp.com/api/v1/${id}`, state)
-            setUser(user.data.updatedUser)
-            if (user.status === 200) {
-                setState({
-                    widthraw: true,
-                    add: false,
-                    amount: '',
-                    bricks: ''
-                });
-                setBtn('Widthraw')
-                const allData = await getItems('https://qadir-bricks-company.herokuapp.com/api/v1');
-                setData(allData)
-            }
-        }
-        fetchData()
-
-    }
-    const handleChange = (e) => {
-        setState(prev => {
-            return ({ ...prev, [e.target.name]: e.target.value })
-        })
-    }
-    return (
-        <form className='fromUserSubmit' onSubmit={(e) => handleSubmit(e)}>
-            <h3>How much quantites will be deduction</h3>
-            <label htmlFor="amount">Enter Amount</label>
-            <input value={state.amount} onChange={(e) => handleChange(e)} type="number" id='amount' name='amount' required />
-            <label htmlFor="bricks">Enter Bricks Quantity</label>
-            <input value={state.bricks} onChange={(e) => handleChange(e)} type="number" id='bricks' name='bricks' required />
-            <input type="submit" value={btn}/>
-        </form>
-    )
-}
 
 export {
-    AddedForm,
-    WidthrawForm
+    AddRemoveForm
 }
