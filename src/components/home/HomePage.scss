@@ -33,6 +33,7 @@
 }
 
 @media screen and (max-width:700px) {
+    
     .home {
         width: 100%;
         padding: 0rem 0;
@@ -40,7 +41,9 @@
         overflow: auto;
         height: 100%;
         min-height: 102vh;
-
+        &__left {
+            flex: 0;
+        }
         &__container {
             border-radius: 0%;
             flex-direction: column;

@@ -1,8 +1,10 @@
 import React from 'react'
 import { FaUserAlt } from "react-icons/fa"
-import { AiOutlineArrowDown,AiOutlineArrowUp } from "react-icons/ai"
 
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md'
 import { GrFormClose } from 'react-icons/gr'
+import { GrCurrency } from 'react-icons/gr'
+
 import { AddRemoveForm } from './Forms'
 import { closeModalUser, removeModalUser, toogleWidthrawForm, toogleAddForm } from '../../stateRedux/features/userModalSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,8 +15,8 @@ const genLists = (arr) => {
     return arr.map((el, i) => {
         return (<li key={i}>
             <h4 className={`main-list-${el.add ? "remove" : "add"}`}><b >{el.widthraw ? "Removed" : "Added"}</b></h4>
-            <h4>{el.amount}</h4>
-            <h4>{el.bricks}</h4>
+            <h4><GrCurrency /> {el.amount} </h4>
+            <h4>🧱 {el.bricks} </h4>
             <h4>{new Date(el.date).toLocaleDateString("en-US")}</h4>
         </li>)
     })
@@ -46,27 +48,30 @@ const ShowProfile = () => {
                     <div className="profile__heading">
                         <span className="user-profile">
                             <i><FaUserAlt /></i>
-                            <p>{userProfile.name}</p>
-                            <p>address <b>{userProfile.address}</b></p>
-                            <p>Contact <b>{userProfile.number}</b></p>
+                            <div className='user-profile-details'>
+                                <button><b>Name</b> <p>{userProfile.name}</p></button>
+                                <button><b>Address</b> <p>{userProfile.address}</p></button>
+                                <button><b>Contact</b> <p>{userProfile.number}</p></button>
+                            </div>
+
                         </span>
                         <span>
-                            <h2>
-                            <p><b>Amount available : {userProfile.amount}</b></p>
-                            <p><b>Bricks available : {userProfile.bricks}</b></p>
-                            </h2>
+                            <div className='user-profile-details'>
+                                <button><b>Amount available 💲</b> <p>{userProfile.amount}</p></button>
+                                <button><b>Bricks available 🧱</b> <p>{userProfile.bricks}</p></button>
+                            </div>
                         </span>
 
                     </div>
                     {userProfile.active ?
                         <div className="profile__btns">
-                            <button onClick={() => dispatch(toogleAddForm())}>Added {isOpenAddForm? <AiOutlineArrowUp/>: <AiOutlineArrowDown/>}</button>
-                            <button onClick={() => dispatch(toogleWidthrawForm())}>Widthraws {isOpenWidthrawForm? <AiOutlineArrowUp/>: <AiOutlineArrowDown/>}</button>
+                            <button onClick={() => dispatch(toogleAddForm())}>Added {isOpenAddForm ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}</button>
+                            <button onClick={() => dispatch(toogleWidthrawForm())}>Widthraws {isOpenWidthrawForm ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}</button>
                         </div>
                         : ''
                     }
                     {isOpenAddForm && <AddRemoveForm id={userProfile.id} refId={'Add'} />}
-                    {isOpenWidthrawForm && <AddRemoveForm id={userProfile.id} />}
+                    {isOpenWidthrawForm && <AddRemoveForm id={userProfile.id} refId={'remove'} />}
                     <div className="profile__content">
                         <ul>
 

@@ -1,8 +1,11 @@
 import React from 'react'
 import './Lists.scss'
 import cookie from 'react-cookies'
+import { useDispatch } from 'react-redux'
+import { logoutUser } from '../../stateRedux/features/adminSlice'
 
 const Lists = ({openSection,count}) => {
+    const dispatch = useDispatch()
     return (
         <div className='lists'>
             <div className="lists__heading">
@@ -15,7 +18,7 @@ const Lists = ({openSection,count}) => {
                     <li><a href='#!' style={{background:count===3? '#7D6E83':''}} onClick={()=>openSection(3)}>ended contracts </a></li>
                     <li className='logout'><a href='#!'  onClick={()=> {
                         cookie.remove('jwt')
-                        window.location.reload()
+                        dispatch(logoutUser())
                         }}>Logout </a></li>
                 </ul>
             </div>

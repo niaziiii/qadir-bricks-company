@@ -13,13 +13,14 @@ const formitObj = {
     number: ""
 }
 
-const AddNewPerson = ({ set }) => {
+const AddNewPerson = () => {
     const dispatch = useDispatch();    
     const [state, setState] = React.useState(formitObj)
 
     const handleSubmit = (e) => {
         e.preventDefault()
         dispatch(addNewUserBooked(state))
+        setState(formitObj)
     }
 
     const handleChange = (e) => {

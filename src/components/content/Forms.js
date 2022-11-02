@@ -17,15 +17,17 @@ const widthrawState = {
 const AddRemoveForm = ({ id, refId }) => {
     const dispatch = useDispatch()
     const [btn, setBtn] = React.useState('Submit Request')
-    const [state, setState] = React.useState(refId === 'Add' ? addState : widthrawState);
+    const [state, setState] = React.useState(refId === 'remove' ? widthrawState : addState);
 
     const handleSubmit = (e) => {
-        setBtn('Submiting...')
         e.preventDefault();
+        setBtn('Submiting...')
         if (btn === 'Submiting...') return
         dispatch(updateUserStats({ data: state, id: id }))
-        setBtn('Submited')
-        setState(addState)
+        setTimeout(() => {
+            setBtn('Submited')
+            setState((refId === 'remove' ? widthrawState : addState))
+        }, 2000);
     }
     const handleChange = (e) => {
         setState(prev => {
